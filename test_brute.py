@@ -54,8 +54,7 @@ def describe_Brute():
                 assert time > 0 
 
         def it_fails_to_find_correct_guess_with_limit_of_4(cracker):
-            with patch(
-                "brute.Brute.randomGuess",
+            with patch("brute.Brute.randomGuess",
                 side_effect=["wrong1", "wrongpass", "wrongpass3", "wrongpass4"]) as mock_random_guess:
                 time = cracker.bruteMany(limit=4)
                 mock_random_guess.assert_called()
