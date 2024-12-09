@@ -1,0 +1,51 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  RunUnitTests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install pytest pytest-describe pytest-mock
+      - name: Run Unit Tests
+        run: pytest
+
+  RunSystemTests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install pytest
+        run: pip install pytest pytest-spec pytest-describe
+      - name: Run pytest
+        run: pytest --spec --color=yes test_brute.py
+
+  RunFunctionalTests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Install chromedriver
+        uses: nanasess/setup-chromedriver@master
+      - name: Install dependencies
+        run: |
+          pip install selenium==3.141.0
+          pip install behave==1.2.6
+          pip install behave-webdriver==0.3.1
+      - name: Run functional tests
+        run: behave features/
